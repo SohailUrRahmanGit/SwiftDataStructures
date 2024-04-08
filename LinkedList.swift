@@ -53,6 +53,59 @@ public struct LinkedList<T> {
         tail = tail!.next
     }
     
+    public func node(at index: Int) -> Node<T>? {
+        var currentNode = head
+        var currentIndex = 0
+        
+        while currentNode != nil && currentIndex < index {
+            currentNode = currentNode!.next
+            currentIndex += 1
+        }
+        return currentNode
+    }
+    
+    @discardableResult
+    public mutating func insert(_ value: T, after node: Node<T>) -> Node<T> {
+        guard tail !== node else {
+            append(value)
+            return tail!
+        }
+        node.next = Node(val: value, next: node.next)
+        return node.next!
+    }
+    
+    @discardableResult
+    public mutating func pop() -> T? {
+        defer {
+            head = head?.next
+            if isEmpty {
+                tail = nil
+            }
+        }
+        return head?.val
+    }
+                
+    @discardableResult
+    public mutating func removeLast() -> T? {
+        guard let head = head else {
+            return nil
+        }
+        guard head.next != nil else {
+            return pop()
+        }
+        var prev = head
+        var current = head
+        
+        while let next = current.next {
+            prev = current
+            current = next
+        }
+        
+        prev.next = nil
+        tail = prev
+        return current.val
+    }
+    
 }
 
 extension LinkedList: CustomStringConvertible {
@@ -63,3 +116,4 @@ extension LinkedList: CustomStringConvertible {
         return String(describing: head)
     }
 }
+
